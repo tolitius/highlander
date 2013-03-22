@@ -12,7 +12,7 @@
                  [org.clojure/tools.cli "0.2.2"]
                  [zmq/zmq "3.2.2"]]
   
-  :java-source-paths ["src/lmax"]
+  :java-source-paths ["src/bench" "src/lmax"]
   :native-path "/usr/local/lib"
   :jvm-opts [~(str "-Djava.library.path=native/:" (System/getenv "LD_LIBRARY_PATH")) 
              "-Xmx2G" 

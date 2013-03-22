@@ -7,17 +7,16 @@ import java.nio.channels.SocketChannel;
 
 public class Streamer {
 
-  //public static final String ULTIMATE_TRUTH = 
-  //    "Did you know that the Answer to the Ultimate Question of Life, the Universe, and Everything is 42? Did you?";
-
   public static final String ULTIMATE_TRUTH = 
       "Did you know that the Answer to the Ultimate Question of Life, the Universe, and Everything is 42? Did you?";
+
+  public static final Long THINGS_TO_STREAM = 10L * 1000 * 1000;
 
   public static void main( String[] args) {
 
     SocketChannel channel = null;
   
-    if ( args.length == 2 ) {
+    if ( args.length >= 2 ) {
 
       try {
  
@@ -25,9 +24,14 @@ public class Streamer {
 
         String host = args[0];
         Integer port = Integer.parseInt( args[1] );
+
+        Long thingsToSend = THINGS_TO_STREAM;
+        if ( args.length > 2 ) thingsToSend = Long.parseLong( args[2] );
     
         channel = SocketChannel.open();
+        channel.socket().setSendBufferSize( 16 * 1024 * 1024 );
         channel.connect( new InetSocketAddress( host, port ) );
+
         System.out.println( "    ...[CONNECTED]" );
     
         // channel.configureBlocking( false );
@@ -35,9 +39,9 @@ public class Streamer {
         ByteBuffer binaryTruth = ByteBuffer.wrap( ULTIMATE_TRUTH.getBytes() );
         // binaryTruth.order( ByteOrder.LITTLE_ENDIAN );
 
-        System.out.println( "streaming away " + binaryTruth.capacity() + " byte things");
+        System.out.println( "streaming away " + thingsToSend + " \"" + binaryTruth.capacity() + " byte\" things");
         
-        while ( true ) {
+        for ( long i = 0; i < thingsToSend; i++ ) {
 
           channel.write( binaryTruth );
           binaryTruth.flip();
@@ -65,7 +69,7 @@ public class Streamer {
       }
     }
     else {
-      System.out.println( "usage: java Streamer host port" );
+      System.out.println( "usage: Streamer host port [number of things to stream]" );
     }
   }
 }

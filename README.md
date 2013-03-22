@@ -104,6 +104,22 @@ By default it is ZeroMQ, but it can be switched to another queue (e.g. Single Wr
 $ lein run -m bench.qpusher -q swpq
 ```
 
+### Bench Streamer
+
+usage:
+
+```bash
+Streamer host port [number of things to stream]
+```
+
+e.g.
+
+```bash
+$ lein run -m bench.Streamer localhost 4242
+```
+
+will, by default, stream 100 million of "107 byte" things to a Highlander instance. 
+
 ## License
 
 Copyright © 2013 tolitius

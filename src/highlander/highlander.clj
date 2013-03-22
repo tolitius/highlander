@@ -4,7 +4,8 @@
             [highlander.util.swpq :as swpq]
             [highlander.util.redis :as redis])
   (:use [clojure.tools.cli :only [cli]]
-        [clojure.tools.logging]))
+        [clojure.tools.logging])
+  (:gen-class))
 
 (defn rock-and-roll [{:keys [host port produce consume] :as props}]
   (let [handler (netty/data-handler produce)]
