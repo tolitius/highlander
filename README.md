@@ -1,21 +1,24 @@
-# highlander
+# Highlander
 
-Highlander is taking on the "lightings" of data at high speeds and stores this data with the speed that the data store feels comfortable with.
+Highlander is taking on the "lightings" of data at high speeds and stores this data with the speed that a data store feels comfortable with. Its main ingridients are: 
 
-It is quite simple really:  "Non Blocking I/O" => "Queue" => "Data Store"
+```
+[Non Blocking I/O] => [Queue] => [Data Store]
+```
 
-Where the "Queue" and the "Data Store" pieces are pluggable, and "Non blocking I/O" is [Netty|http://netty.io/].
+where a "Non blocking I/O" is [Netty](http://netty.io/) with pluggable "Queue" and "Data Store" pieces.
 
+#### Defaults
 By default Highlander runs on "Netty" => "ZeroMQ" => "Redis"
-with an option to swap out "ZeroMQ" with a [Single Write Principle Queue|http://mechanical-sympathy.blogspot.com/2011/09/single-writer-principle.html]
+with an option to swap out "ZeroMQ" with a [Single Write Principle Queue](http://mechanical-sympathy.blogspot.com/2011/09/single-writer-principle.html)
 
-####_TODO: since a data store (store [thing]) and a queue (produce/consume) are just functions, give an example on how to plug "your own"_
+##### _TODO: since a data store (store [thing]) and a queue (produce/consume) are just functions, give an example on how to plug "your own"_
 
 ## Usage
 
-Since "ZeroMQ" is a default queuing mechanism, and Highlander is JVM (Clojure), ZeroMQ [libraries|http://www.zeromq.org/intro:get-the-software] and [Java bindings|http://www.zeromq.org/bindings:java] need to be installed, in order for Highlander to run.
+Since "ZeroMQ" is a default queuing mechanism, and Highlander is JVM (Clojure), ZeroMQ [libraries](http://www.zeromq.org/intro:get-the-software) and [Java bindings](http://www.zeromq.org/bindings:java) need to be installed, in order for Highlander to run.
 
-Running it from sources is really simple (that's how we roll in Clojure Universe):
+Running it from sources is really simple (that's how we roll in the Clojure Universe):
 
 ```bash
 $ lein run
@@ -59,7 +62,7 @@ INFO: [swpq]: single write principle queue is ready to roll
 
 ### Peeking Inside the Q
 
-While a "Data Store" allows you to easily peek inside, queues are different. For example ZeroMQ does not allow you to do that, hence the Highlander has a Q monitor built in that gives basic throughput visibility as the data is streaming in:
+While a "Data Store" allows you to easily peek inside, queues are different. For example ZeroMQ does not allow you to do that, hence Highlander has a Q monitor built in that gives basic throughput visibility as the data streams in:
 
 ```bash
        message rate: 329552.2 msg/s
@@ -69,7 +72,7 @@ While a "Data Store" allows you to easily peek inside, queues are different. For
 
 ### Exporting LD_LIBRARY_PATH
 
-Before running the highlander, `LD_LIBRARY_PATH` needs to be exported to let the server know where to find zmq C++ libs:
+Before running Highlander, `LD_LIBRARY_PATH` needs to be exported to let it know where to find ZeroMQ C++/Java libs:
 ```bash
 export LD_LIBRARY_PATH=/usr/local/lib
 ```
