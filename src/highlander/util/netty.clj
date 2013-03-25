@@ -8,7 +8,7 @@
     [org.jboss.netty.bootstrap ServerBootstrap]
     [org.jboss.netty.channel ChannelHandlerContext MessageEvent Channels ChannelPipelineFactory SimpleChannelHandler]
     [org.jboss.netty.channel.socket.nio NioServerSocketChannelFactory]
-    [org.jboss.netty.buffer HeapChannelBufferFactory ChannelBuffers]))
+    [org.jboss.netty.buffer HeapChannelBuffer HeapChannelBufferFactory ChannelBuffers]))
 
 (defn- shutdown [factory] 
   "shutting down netty in a different thread not to cause deadlocks"
@@ -25,7 +25,7 @@
 
     (messageReceived [#^ChannelHandlerContext ctx 
                       #^MessageEvent event]
-      (-> (.getMessage event)
+      (-> (cast HeapChannelBuffer (.getMessage event))
           (.array)
           (handle-it)))
 
@@ -56,8 +56,8 @@
     (.addLast pipeline "handler" handler)
     (.setOption bootstrap "child.tcpNoDelay", true)
     (.setOption bootstrap "child.keepAlive", true)
-    (.setOption bootstrap "writeBufferLowWaterMark", (* 128 1024))
-    (.setOption bootstrap "writeBufferHighWaterMark", (* 2 1024 1024))
+    (.setOption bootstrap "writeBufferLowWaterMark",      (* 10 1024 1024))
+    (.setOption bootstrap "writeBufferHighWaterMark", (* 2 1024 1024 1024))
     ;; (.setOption bootstrap "child.bufferFactory", (HeapChannelBufferFactory. ByteOrder/LITTLE_ENDIAN))
     (.setOption bootstrap "receiveBufferSize", (* 16 1024 1024)) ;; TODO: make it configurable
     (.bind bootstrap (InetSocketAddress. host port))

@@ -6,13 +6,18 @@ Highlander is taking on the "lightings" of data at high speeds and stores this d
 [Non Blocking I/O] => [Queue] => [Data Store]
 ```
 
-where a "Non blocking I/O" is [Netty](http://netty.io/) with pluggable "Queue" and "Data Store" pieces.
+where "Non blocking I/O", "Queue" and "Data Store" pieces are pluggable.
 
 #### Defaults
-By default Highlander runs on "Netty" => "ZeroMQ" => "Redis"
-with an option to swap out "ZeroMQ" with a [Single Write Principle Queue](http://mechanical-sympathy.blogspot.com/2011/09/single-writer-principle.html)
+By default Highlander runs on "[Netty](http://netty.io/)" => "[ZeroMQ](http://www.zeromq.org/)" => "[Redis](http://redis.io/)"
 
-##### _TODO: since a data store (store [thing]) and a queue (produce/consume) are just functions, give an example on how to plug "your own"_
+There are some built in pieces though that can be used instead of default config:
+
+* "Netty" can be swapped with plain "Java NIO" (in case of a few connections and higher throughput demand)
+* "ZeroMQ" can be swapped with a [Single Write Principle Queue](http://mechanical-sympathy.blogspot.com/2011/09/single-writer-principle.html)
+* "Redis" can be swapped with "any other" data store
+
+###### _TODO: since a data store (store [thing]) and a queue (produce/consume) are just functions, give an example on how to plug "your own"_
 
 ## Usage
 
@@ -41,6 +46,7 @@ INFO: Usage:
  -zq, --zqueue     inproc://zhulk.ipc  use this zmq queue
  -q, --queue       zmq                 queue type [e.g. zmq, swpq]
  -qc, --qcapacity  33554432            queue capacity. used for JVM queues
+ -s, --server      netty               server type [e.g. netty, nio]
  -mi, --monterval  5                   queue monitor interval
 ```
 
@@ -58,6 +64,14 @@ which will reflect that on the startup:
 ...
 INFO: [swpq]: single write principle queue is ready to roll
 ...
+```
+
+### Swapping NIO
+
+Using Java NIO instead of Netty can be done via a command line param 's' (or '--server'):
+
+```
+$ lein run -s nio
 ```
 
 ### Peeking Inside the Q
