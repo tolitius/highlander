@@ -40,7 +40,7 @@
         socket (.socket channel)]
     (.bind socket (InetSocketAddress. host port))
     (.setReceiveBufferSize socket (* 16 1024 1024))
-    (info "highlander is ready for the lightning {:host" host ":port" port "}")
+    (info "[nio]: highlander is ready for the lightning {:host" host ":port" port "}")
     (multiplex-connections channel handler)))
 
 

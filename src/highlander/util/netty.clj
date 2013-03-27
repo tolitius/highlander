@@ -61,6 +61,6 @@
     ;; (.setOption bootstrap "child.bufferFactory", (HeapChannelBufferFactory. ByteOrder/LITTLE_ENDIAN))
     (.setOption bootstrap "receiveBufferSize", (* 16 1024 1024)) ;; TODO: make it configurable
     (.bind bootstrap (InetSocketAddress. host port))
-    (info "highlander is ready for the lightning {:host" host ":port" port "}")
+    (info "[netty]: highlander is ready for the lightning {:host" host ":port" port "}")
     pipeline))
 

@@ -79,7 +79,7 @@ $ lein run -s nio
 While a "Data Store" allows you to easily peek inside, queues are different. For example ZeroMQ does not allow you to do that, hence Highlander has a Q monitor built in that gives basic throughput visibility as the data streams in:
 
 ```bash
-       message rate: 329552.2 msg/s
+       message rate: 72047.6 msg/s
       current depth: 143428
  pass through total: 7939711
 ```
