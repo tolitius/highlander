@@ -8,6 +8,8 @@ Highlander is taking on the "lightings" of data at high speeds and stores this d
 
 where "Non blocking I/O", "Queue" and "Data Store" pieces are pluggable.
 
+![Java NIO => ZeroMQ => Redis](https://github.com/tolitius/highlander/blob/master/doc/highlander.baseline.gif?raw=true)
+
 #### Defaults
 By default Highlander runs on "[Netty](http://netty.io/)" => "[ZeroMQ](http://www.zeromq.org/)" => "[Redis](http://redis.io/)"
 
