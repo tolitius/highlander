@@ -3,8 +3,9 @@
   (:require [highlander.util.qstats :as q])
   (:import [java.io IOException]
            [java.net InetSocketAddress]
-           [java.nio ByteBuffer]
-           [java.nio.channels SocketChannel ServerSocketChannel]))
+           [java.nio ByteBuffer HeapByteBuffer]
+           [java.nio.channels SocketChannel ServerSocketChannel]
+           [sun.nio.ch SocketChannelImpl]))
 
 (defn- shutdown [channel] 
   (try 
@@ -14,9 +15,11 @@
 ;; TODO: This is for an example sake. 
 ;;         1. Implement more "FrameDecoders": e.g. http://netty.io/3.6/api/org/jboss/netty/handler/codec/frame/FrameDecoder.html
 ;;         2. Decouple channel reading from the decoding the frame
-(defn decode-fixed-lengh-frame [handle-it length channel]
-  (let [bbuffer (ByteBuffer/allocate length)
-        bytes-read (.read channel bbuffer)]
+(defn decode-fixed-lengh-frame [handle-it 
+                                ^Long length 
+                                ^SocketChannelImpl channel]   ;; hinting as an experiment
+  (let [^HeapByteBuffer bbuffer (ByteBuffer/allocate length)]
+    (.read channel bbuffer)
     (handle-it (.array bbuffer))))
 
 ;; TODO: A tight loop of no return :) 
