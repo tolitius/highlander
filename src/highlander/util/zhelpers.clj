@@ -49,7 +49,7 @@
   ([#^ZMQ$Socket socket]
      (subscribe socket "")))
 
-(defn send-bytes [#^ZMQ$Socket socket #^bytes message]
+(defn send-bytes [^ZMQ$Socket socket ^bytes message]
   (.send socket message 0))
 
 (defn recv-bytes [socket]
