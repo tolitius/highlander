@@ -96,7 +96,7 @@ export LD_LIBRARY_PATH=/usr/local/lib
 
 ### Q Pusher
 
-There is a bench playground that has a basic Java NIO streamer, as well as a Q Pusher, which allows to take Netty and Data Store out of the picture to just focus on Q numbers. It can be run as:
+There is a bench playground that has a basic Java NIO streamer, as well as a Q Pusher, which allows to take network (Netty/NIO) and Data Store out of the picture to just focus on Q numbers. It can be run as:
 
 ```bash
 $ lein run -m bench.qpusher
@@ -114,27 +114,62 @@ INFO: Usage:
  -mi, --monterval  5               queue monitor interval
 ```
 
-By default it is ZeroMQ, but it can be switched to another queue (e.g. Single Write Principle):
+For example here is a default ZeroMQ rate pushing 2 million messages a second:
+
+```bash
+INFO: pushed  14000000  things
+Jul 23, 2013 9:20:13 AM clojure.tools.logging$eval9$fn__13 invoke
+INFO:
+       message rate: 2019744.2 msg/s
+      current depth: 29474713
+ pass through total: 29488869
+Jul 23, 2013 9:20:13 AM clojure.tools.logging$eval9$fn__13 invoke
+INFO: pushed  15000000  things
+```
+
+While ZeroMQ is great and it is default, the Q Pusher can be told to work with any other queue implementaion. 
+For example here is how to tell a Q Pusher to work with a built in Single Write Principle Queue, 
+which is a pure JVM queue implementation:
 
 ```
 $ lein run -m bench.qpusher -q swpq
 ```
 
+```
+INFO: pushed  13000000  things
+Jul 23, 2013 9:21:53 AM clojure.tools.logging$eval9$fn__13 invoke
+INFO:
+       message rate: 1140890.0 msg/s
+      current depth: 27507363
+ pass through total: 27527867
+Jul 23, 2013 9:21:54 AM clojure.tools.logging$eval9$fn__13 invoke
+INFO: pushed  14000000  things
+```
+
 ### Bench Streamer
 
-usage:
+Highlander also has a NIO load simulation streamer that can be run on the same or different host and stream messages to a Highlander instance.
+
+Since this is a simulation streamer, it needs to be as close to the true load as possible, hence it streams "pure truth" in a form of a question:
+
+```java
+public static final String ULTIMATE_TRUTH = 
+  "Did you know that the Answer to the Ultimate Question of Life, the Universe, and Everything is 42? Did you?";
+```
+
+that is where a "stream of truth" comes from.
+
+#### Usage
 
 ```bash
 Streamer host port [number of things to stream]
 ```
-
 e.g.
-
 ```bash
 $ lein run -m bench.Streamer localhost 4242
 ```
 
-will, by default, stream 100 million of "107 byte" things to a Highlander instance. 
+will, by default, stream 100 million of "107 byte" truths to a Highlander instance. 
 
 ## License
 
