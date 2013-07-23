@@ -23,8 +23,8 @@
 
   (proxy [SimpleChannelHandler] []
 
-    (messageReceived [#^ChannelHandlerContext ctx 
-                      #^MessageEvent event]
+    (messageReceived [^ChannelHandlerContext ctx 
+                      ^MessageEvent event]
       (-> (cast HeapChannelBuffer (.getMessage event))
           (.array)
           (handle-it)))

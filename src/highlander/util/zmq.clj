@@ -16,13 +16,13 @@
         (mq/subscribe socket)
         (info "[zmq]: consumer is connected to " queue)
         (while true   ;; TODO Have a shutdown hook
-          (let [msg (mq/recv-bytes socket)]
+          (let [^bytes msg (mq/recv-bytes socket)]
             (swap! q/depth dec)
             (consume msg)))
         (future-cancel monitor))
     (catch Exception e (error "receiver caught: " e))))
 
-(defn- qsend [#^ZMQ$Socket socket message]
+(defn- qsend [^ZMQ$Socket socket message]
   (swap! q/depth inc)
   (swap! q/current inc)
   (mq/send-bytes socket message))

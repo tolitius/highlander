@@ -15,7 +15,8 @@
   :java-source-paths ["src/bench" "src/lmax"]
   :native-path "/usr/local/lib"
   :jvm-opts [~(str "-Djava.library.path=native/:" (System/getenv "LD_LIBRARY_PATH")) 
-             "-Xmx2G" 
+             "-Xmx4G" 
+             ;; "-XX:+UseG1GC"
              "-XX:MaxPermSize=512M"]
 
   :main highlander)
