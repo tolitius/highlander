@@ -8,7 +8,7 @@
         [clojure.tools.logging])
   (:gen-class))
 
-;; For vannila NIO a fixed length frame decoder is used as an example. TODO: Needs to be pluginable
+;; For vannila NIO a fixed length frame decoder is used as an example. TODO: Needs to be pluggable
 (defn rock-and-roll [{:keys [server host port produce consume fixed-length] :as props}]
   (case server
     "netty" (let [handler (netty/data-handler produce)]
@@ -25,7 +25,7 @@
 
 (defn store-timeseries [message]
   "an example of a storage fun"
-;;  (let [msg (String. message "UTF-8")]
+;;  (let [msg (String. (.getBytes message "UTF-8"))]
     (redis/store-kv (System/nanoTime) message))
 
 (defn -main [& args]

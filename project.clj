@@ -9,6 +9,7 @@
                  [com.taoensso/carmine "1.6.0"]
                  [io.netty/netty "3.6.3.Final"]
                  [clj-time "0.4.5"]
+                 [lasync "0.1.0-SNAPSHOT"]
                  [org.clojure/tools.cli "0.2.2"]
                  [zmq/zmq "3.2.2"]]
   
