@@ -1,6 +1,8 @@
 # Highlander
 
-Highlander is taking on the "lightings" of data at high speeds and stores this data with the speed that a data store feels comfortable with. Its main ingridients are: 
+Highlander is taking on the "lightings" of data at high speeds and stores this data with the speed that a data store feels comfortable with. 
+
+## Main Ingridients
 
 ```
 [Non Blocking I/O] => [Queue] => [Data Store]
@@ -8,6 +10,7 @@ Highlander is taking on the "lightings" of data at high speeds and stores this d
 
 where "Non blocking I/O", "Queue" and "Data Store" pieces are pluggable.
 
+_TODO: update gif to reflect the current 400K+ messages per second_
 ![Java NIO => ZeroMQ => Redis](https://github.com/tolitius/highlander/blob/master/doc/highlander.baseline.gif?raw=true)
 
 #### Defaults
@@ -21,9 +24,24 @@ There are some built in pieces though that can be used instead of default config
 
 ###### _TODO: since a data store (store [thing]) and a queue (produce/consume) are just functions, give an example on how to plug "your own"_
 
+## Current Throughput
+
+With `--server nio` and `ZeroMQ 4.0.5` (used via JZMQ), average throughput on `127.0.0.1` is **`420K`** `107 byte` messages per second. 
+
+This does not mean `420K` messages per second are read from the network and persisted in a data store. The idea is to have queue(s) absorb the load, while landing these messages "comfortably" to the data store. Hence the concept of a `queue depth` (absorb bucket) shown in examples below.
+
 ## Usage
 
+####ZeroMQ & Java Bindings
+
 Since "ZeroMQ" is a default queuing mechanism, and Highlander is JVM (Clojure), ZeroMQ [libraries](http://www.zeromq.org/intro:get-the-software) and [Java bindings](http://www.zeromq.org/bindings:java) need to be installed, in order for Highlander to run.
+
+After ZeroMQ and JZMQ are installed, depending on a version of ZeroMQ (let's say it's `${zeromq.version}`), a zeromq jar can be installed to local maven repo. The `zmq.jar` should live in `/usr/local/share/java/`, after JZMQ is installed. Just copy it somewhere, rename it to have a `${zeromq.version}` (e.g. `zmq-${zeromq.version}.jar`), and: 
+
+```bash
+mvn install:install-file -Dfile=./zmq-${zeromq.version}.jar -DgroupId=zmq -DartifactId=zmq -Dversion=${zeromq.version} -Dpackaging=jar
+```
+### Running Highlander
 
 Running it from sources is really simple (that's how we roll in the Clojure Universe):
 
@@ -83,9 +101,9 @@ For example ZeroMQ does not allow you to do that, hence Highlander has a Q monit
 that gives basic throughput visibility as the data streams in (numbers via "--server nio"):
 
 ```bash
-       message rate: 191228.6 msg/s
-      current depth: 3508803
- pass through total: 3667695
+       message rate: 419482.8 msg/s
+      current depth: 3550038
+ pass through total: 9874863
 ```
 
 ### Exporting LD_LIBRARY_PATH
@@ -116,17 +134,12 @@ INFO: Usage:
  -mi, --monterval  5               queue monitor interval
 ```
 
-For example here is a default ZeroMQ rate pushing 2 million messages a second:
+For example here is a default ZeroMQ rate pushing 6.7 million messages a second:
 
 ```bash
-INFO: pushed  14000000  things
-Jul 23, 2013 9:20:13 AM clojure.tools.logging$eval9$fn__13 invoke
-INFO:
-       message rate: 2019744.2 msg/s
-      current depth: 29474713
- pass through total: 29488869
-Jul 23, 2013 9:20:13 AM clojure.tools.logging$eval9$fn__13 invoke
-INFO: pushed  15000000  things
+       message rate: 6692981.6 msg/s
+      current depth: 130530939
+ pass through total: 130547905
 ```
 
 While ZeroMQ is great and it is default, the Q Pusher can be told to work with any other queue implementaion. 
@@ -138,14 +151,9 @@ $ lein run -m bench.qpusher -q swpq
 ```
 
 ```
-INFO: pushed  13000000  things
-Jul 23, 2013 9:21:53 AM clojure.tools.logging$eval9$fn__13 invoke
-INFO:
-       message rate: 1140890.0 msg/s
-      current depth: 27507363
- pass through total: 27527867
-Jul 23, 2013 9:21:54 AM clojure.tools.logging$eval9$fn__13 invoke
-INFO: pushed  14000000  things
+       message rate: 1676536.0 msg/s
+      current depth: 40987563
+ pass through total: 41007837
 ```
 
 ### Bench Streamer
@@ -173,8 +181,13 @@ $ lein run -m bench.Streamer localhost 4242
 
 will, by default, stream 100 million of "107 byte" truths to a Highlander instance. 
 
+Just as with Highlander, before running Bench Streamer, `LD_LIBRARY_PATH` needs to be exported to let it know where to find ZeroMQ C++/Java libs:
+```bash
+export LD_LIBRARY_PATH=/usr/local/lib
+```
+
 ## License
 
-Copyright © 2013 tolitius
+Copyright © 2014 tolitius
 
 Distributed under the Eclipse Public License, the same as Clojure.
