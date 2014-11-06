@@ -4,6 +4,7 @@
 /checkouts
 pom.xml
 nohup.out
+.DS_Store
 *.jar
 *.class
 .lein-deps-sum

@@ -26,8 +26,7 @@
 (defn store-timeseries [message]
   "an example of a storage fun"
 ;;  (let [msg (String. (.getBytes message "UTF-8"))]
-    ;; (redis/store-kv (System/nanoTime) message))
-  )
+    (redis/store-kv (System/nanoTime) message))
 
 (defn -main [& args]
   (let [[props args usage] 

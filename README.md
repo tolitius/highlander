@@ -10,7 +10,6 @@ Highlander is taking on the "lightings" of data at high speeds and stores this d
 
 where "Non blocking I/O", "Queue" and "Data Store" pieces are pluggable.
 
-_TODO: update gif to reflect the current 400K+ messages per second_
 ![Java NIO => ZeroMQ => Redis](https://github.com/tolitius/highlander/blob/master/doc/highlander.baseline.gif?raw=true)
 
 #### Defaults
