@@ -24,10 +24,14 @@ There are some built in pieces though that can be used instead of default config
 ###### _TODO: since a data store (store [thing]) and a queue (produce/consume) are just functions, give an example on how to plug "your own"_
 
 ## Current Throughput
-
+ 
 With `--server nio` and `ZeroMQ 4.0.5` (used via JZMQ), average throughput on `127.0.0.1` is **`420K`** `107 byte` messages per second. 
 
 This does not mean `420K` messages per second are read from the network and persisted in a data store. The idea is to have queue(s) absorb the load, while landing these messages "comfortably" to the data store. Hence the concept of a `queue depth` (absorb bucket) shown in examples below.
+
+With Netty, which is used by default, the speed is `220K` messages per second. However Netty can also scale in the number of connections + the messages are frame decoded.
+
+_(MacBook Pro 2.3 GHz i7 16GB)_
 
 ## Usage
 

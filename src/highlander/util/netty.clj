@@ -6,6 +6,7 @@
     [java.nio ByteOrder]
     [java.util.concurrent Executors]
     [org.jboss.netty.bootstrap ServerBootstrap]
+    [org.jboss.netty.handler.codec.frame FixedLengthFrameDecoder]
     [org.jboss.netty.channel ChannelHandlerContext MessageEvent Channels ChannelPipelineFactory SimpleChannelHandler]
     [org.jboss.netty.channel.socket.nio NioServerSocketChannelFactory]
     [org.jboss.netty.buffer HeapChannelBuffer HeapChannelBufferFactory ChannelBuffers]))
@@ -53,6 +54,7 @@
                           (Executors/newCachedThreadPool))
         bootstrap (ServerBootstrap. channel-factory)
         pipeline (.getPipeline bootstrap)]
+    (.addLast pipeline "framer" (FixedLengthFrameDecoder. (int 107))) ;; decoder should be injected
     (.addLast pipeline "handler" handler)
     (.setOption bootstrap "child.tcpNoDelay", true)
     (.setOption bootstrap "child.keepAlive", true)

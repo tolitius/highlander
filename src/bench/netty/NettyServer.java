@@ -9,6 +9,7 @@ import java.nio.ByteOrder;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
+//@NotUsed: here for foreplay purposes
 public class NettyServer {
 
     public static String HOST = "0.0.0.0";
