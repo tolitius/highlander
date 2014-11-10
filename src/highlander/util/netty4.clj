@@ -31,8 +31,8 @@
 
     (channelRead [^ChannelHandlerContext ctx 
                   ^ByteBuf msg]
-      (let [buf (cast ByteBuf msg)
-            data (byte-array (.readableBytes buf))]
+      (let [^ByteBuf buf (cast ByteBuf msg)
+            ^bytes data (byte-array (.readableBytes buf))]
         (.readBytes buf data)
         (handle-it data)
         (.release buf)))

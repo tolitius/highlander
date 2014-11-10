@@ -29,7 +29,7 @@ A _single_ connection to Highlander with `--server nio` and `ZeroMQ 4.0.5` (used
 
 This does not mean `635K` messages per second are read from the network and persisted in a data store. The idea is to have queue(s) absorb the load, while landing these messages "comfortably" to the data store. Hence the concept of a `queue depth` (absorb bucket) shown in examples below.
 
-With Netty, which is used by default, a _single_ connection speed is `220K` messages per second. However Netty can also scale in the number of connections + the messages are frame decoded.
+With Netty, which is used by default, a _single_ connection speed is **`675K`** messages per second. However Netty can also scale in the number of connections + the messages are frame decoded.
 
 _(MacBook Pro 2.3 GHz i7 16GB)_
 
@@ -101,12 +101,12 @@ $ lein run -s nio
 
 While a "Data Store" allows you to easily peek inside, queues are different. 
 For example ZeroMQ does not allow you to do that, hence Highlander has a Q monitor built in
-that gives basic throughput visibility as the data streams in (numbers via "--server nio"):
+that gives basic throughput visibility as the data streams in:
 
 ```bash
-       message rate: 419482.8 msg/s
-      current depth: 3550038
- pass through total: 9874863
+       message rate: 680256.6 msg/s
+      current depth: 99170665
+ pass through total: 101939881
 ```
 
 ### Exporting LD_LIBRARY_PATH
