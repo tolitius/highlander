@@ -1,8 +1,7 @@
 (ns highlander.util.swpq
   (:use [clojure.tools.logging]
         [highlander.util.schedule])
-  (:import [lmax OneToOneConcurrentArrayQueue3]
-           [org.jboss.netty.buffer BigEndianHeapChannelBuffer])
+  (:import [lmax OneToOneConcurrentArrayQueue3])
   (:require [highlander.util.qstats :as q]))
 
 (defn- qsend [queue message]

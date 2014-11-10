@@ -1,4 +1,6 @@
-(ns highlander.util.netty
+(comment ;; this is for Netty 3.x
+
+(ns highlander.util.netty3
   (:use [clojure.tools.logging])
   (:require [highlander.util.qstats :as q])
   (:import
@@ -65,4 +67,4 @@
     (.bind bootstrap (InetSocketAddress. host port))
     (info "[netty]: highlander is ready for the lightning {:host" host ":port" port "}")
     pipeline))
-
+)

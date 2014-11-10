@@ -2,8 +2,7 @@
   (:use [clojure.tools.logging]
         [highlander.util.schedule])
   (:refer-clojure :exclude [send])
-  (:import [org.zeromq ZMQ ZMQ$Context ZMQ$Socket ZMQQueue]
-           [org.jboss.netty.buffer BigEndianHeapChannelBuffer])
+  (:import [org.zeromq ZMQ ZMQ$Context ZMQ$Socket ZMQQueue])
   (:require [highlander.util.zhelpers :as mq]
             [highlander.util.qstats :as q]))
 

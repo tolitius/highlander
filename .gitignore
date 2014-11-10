@@ -5,6 +5,7 @@
 pom.xml
 nohup.out
 .DS_Store
+.nrepl-port
 *.jar
 *.class
 .lein-deps-sum

@@ -1,5 +1,5 @@
 (ns highlander
-  (:require [highlander.util.netty :as netty]
+  (:require [highlander.util.netty4 :as netty]
             [highlander.util.nio :as nio]
             [highlander.util.zmq :as zmq]
             [highlander.util.swpq :as swpq]
