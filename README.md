@@ -25,11 +25,11 @@ There are some built in pieces though that can be used instead of default config
 
 ## Current Throughput
  
-A _single_ connection to Highlander with `Netty`, `ZeroMQ 4.0.5` (used via JZMQ) and `Redis`, average throughput on `127.0.0.1` is **`675K`** `107 byte` messages per second. 
+An average throughput of a _single_ connection to Highlander with defaults: e.g. `Netty 4.0.24.Final`, `ZeroMQ 4.0.5` (used via JZMQ) and `Redis 2.8.17`, sending 107 byte messages to `127.0.0.1` is **675,000 messages per second**.
 
 This does not mean `675K` messages per second are read from the network and persisted in a data store. The idea is to have queue(s) absorb the load, while landing these messages "comfortably" to the data store. Hence the concept of a `queue depth` (an absorb bucket) shown in examples below.
 
-With `--server nio` (a simple Java NIO server), a _single_ connection speed is **`635K`** messages per second. `Netty` a default, preferred choice due to its flexibility and ability to scale not only in throughput, but also in a number of connections.
+With `--server nio` (a simple Java NIO server), a _single_ connection speed is **`635K`** messages per second. `Netty` is a default, preferred choice due to its flexibility and ability to scale not only in throughput, but also in a number of connections.
 
 _(MacBook Pro 2.3 GHz i7 16GB)_
 
