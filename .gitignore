@@ -8,6 +8,8 @@ nohup.out
 .nrepl-port
 *.jar
 *.class
+.idea/
+*.iml
 .lein-deps-sum
 .lein-failures
 .lein-plugins

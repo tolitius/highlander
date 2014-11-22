@@ -52,7 +52,7 @@
         (.printStackTrace throwable)
         (.close ctx)))))
 
-(defn start [handler {:keys [host port]}]
+(defn start [handle-it {:keys [host port]}]
   (let [connection-group (NioEventLoopGroup.)
         worker-group (NioEventLoopGroup.)]
     (try
@@ -64,7 +64,7 @@
                              (initChannel [^SocketChannel channel]
                                (let [^ChannelPipeline pipeline (.pipeline channel)]
                                  (.addLast pipeline (into-array ChannelHandler [(FixedLengthFrameDecoder. (int 107))
-                                                                                handler]))))))
+                                                                                (data-handler handle-it)]))))))
             (.option (ChannelOption/WRITE_BUFFER_LOW_WATER_MARK) (int (* 64 1024)))
             (.option (ChannelOption/WRITE_BUFFER_HIGH_WATER_MARK) (int (dec (* 2 1024 1024 1024))))
             (.option (ChannelOption/SO_RCVBUF) (int (* 16 1024 1024)))

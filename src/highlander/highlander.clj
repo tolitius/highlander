@@ -11,8 +11,7 @@
 ;; For vannila NIO a fixed length frame decoder is used as an example. TODO: Needs to be pluggable
 (defn rock-and-roll [{:keys [server host port produce consume fixed-length] :as props}]
   (case server
-    "netty" (let [handler (netty/data-handler produce)]
-              (netty/start handler props))
+    "netty" (netty/start produce props)
     "nio"   (let [handler (partial nio/decode-fixed-lengh-frame produce fixed-length)]
               (nio/start handler props))
   (future-cancel consume)))
