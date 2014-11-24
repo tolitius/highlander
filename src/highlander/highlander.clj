@@ -1,21 +1,19 @@
 (ns highlander
-  (:require [highlander.util.netty4 :as netty]
-            [highlander.util.nio :as nio]
-            [highlander.util.zmq :as zmq]
-            [highlander.util.swpq :as swpq]
-            [highlander.util.redis :as redis])
+  (:require [highlander.server.netty4 :as netty]
+            [highlander.server.nio :as nio]
+            [highlander.queue.zmq :as zmq]
+            [highlander.queue.swpq :as swpq]
+            [highlander.store.redis :as redis])
   (:use [clojure.tools.cli :only [cli]]
         [clojure.tools.logging])
   (:gen-class))
 
 ;; For vannila NIO a fixed length frame decoder is used as an example. TODO: Needs to be pluggable
 (defn rock-and-roll [handler
-                     {:keys [server fixed-length] :as props}]
+                     {:keys [server] :as props}]
   (case server
     "netty" (netty/start handler props)
-    "nio" (let [{:keys [produce consume]} (handler)
-                st-handler (partial nio/decode-fixed-lengh-frame produce fixed-length)] ;; single threaded handler
-            (nio/start st-handler props))
+    "nio" (nio/start handler props)
     ;; (future-cancel consume) ;; TODO: think about multi threaded "consume" access here (via promise?)
     ))
 
@@ -39,7 +37,7 @@
                     ["-q" "--queue" "queue type [e.g. zmq, swpq]" :default "zmq"]
                     ["-qc" "--qcapacity" "queue capacity. used for JVM queues" :parse-fn #(Integer. %) :default (* 32 1024 1024)]
                     ["-s" "--server" "server type [e.g. netty, nio]" :default "netty"]
-                    ["-fl" "--fixed-length" "fixed length messages" :parse-fn #(Integer. %) :default 107]
+                    ["-fl" "--fixed-length" "fixed length messages" :parse-fn #(Integer. %) :default 100]
                     ["-mi" "--monterval" "queue monitor interval" :parse-fn #(Integer. %) :default 5])]
     (info usage)
     (plug-and-play store-timeseries props)))

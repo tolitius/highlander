@@ -1,10 +1,10 @@
-(ns highlander.util.zmq
+(ns highlander.queue.zmq
   (:use [clojure.tools.logging]
         [highlander.util.schedule])
   (:refer-clojure :exclude [send])
   (:import [org.zeromq ZMQ$Socket])
-  (:require [highlander.util.zhelpers :as mq]
-            [highlander.util.qstats :as q]))
+  (:require [highlander.queue.zhelpers :as mq]
+            [highlander.monitor.qstats :as q]))
 
 (defn- qreceive [queue consume monitor depth]
   (try                                   ;; avoiding a silent "future" death

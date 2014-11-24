@@ -1,4 +1,4 @@
-(ns highlander.util.redis
+(ns highlander.store.redis
   (:require [taoensso.carmine :as db])
   (:use lasync))
 

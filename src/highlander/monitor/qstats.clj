@@ -1,5 +1,5 @@
-(ns highlander.util.qstats
-  (:import (lmax OneToOneConcurrentArrayQueue3))
+(ns highlander.monitor.qstats
+  (:import [lmax OneToOneConcurrentArrayQueue3])
   (:use [clojure.tools.logging]
         [highlander.util.schedule]))
 
@@ -25,10 +25,10 @@
   "returns a cancelable queue stats monitor"
   (let [[depth current previous] [(atom 0) (atom 0) (atom 0)]]
     {:monitor (every interval #(info (stats id
-                                  @current
-                                  previous
-                                  @depth
-                                  interval)))
+                                            @current
+                                            previous
+                                            @depth
+                                            interval)))
      :current current
      :depth depth}))                                        ;; zmq has no ".size" (depth visibility)
 

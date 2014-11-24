@@ -1,8 +1,8 @@
-(ns highlander.util.swpq
+(ns highlander.queue.swpq
   (:use [clojure.tools.logging]
         [highlander.util.schedule])
   (:import [lmax OneToOneConcurrentArrayQueue3])
-  (:require [highlander.util.qstats :as q]))
+  (:require [highlander.monitor.qstats :as q]))
 
 (defn- qsend [queue current message]
   (swap! current inc)

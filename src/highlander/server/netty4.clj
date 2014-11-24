@@ -1,21 +1,15 @@
-(ns highlander.util.netty4
+(ns highlander.server.netty4
   (:use [clojure.tools.logging])
-  (:require [highlander.util.qstats :as q])
   (:import
     [java.net InetSocketAddress]
-    [java.nio ByteOrder]
-    [java.util.concurrent Executors]
     [io.netty.buffer ByteBuf]
     [io.netty.bootstrap ServerBootstrap]
     [io.netty.channel ChannelHandlerContext 
                       ChannelInboundHandlerAdapter
-                      ChannelFuture
                       ChannelPipeline
                       ChannelHandler
-                      ChannelFuture
                       ChannelInitializer
-                      ChannelOption
-                      EventLoopGroup]
+                      ChannelOption]
     [io.netty.channel.nio NioEventLoopGroup]
     [io.netty.channel.socket SocketChannel]
     [io.netty.channel.socket.nio NioServerSocketChannel]
@@ -64,7 +58,7 @@
                              (initChannel [^SocketChannel channel]
                                (let [^ChannelPipeline pipeline (.pipeline channel)
                                      {:keys [produce]} (handle-it)]
-                                 (.addLast pipeline (into-array ChannelHandler [(FixedLengthFrameDecoder. (int 107))
+                                 (.addLast pipeline (into-array ChannelHandler [(FixedLengthFrameDecoder. (int 100))
                                                                                 (data-handler produce)]))))))
             (.option (ChannelOption/WRITE_BUFFER_LOW_WATER_MARK) (int (* 64 1024)))
             (.option (ChannelOption/WRITE_BUFFER_HIGH_WATER_MARK) (int (dec (* 2 1024 1024 1024))))
