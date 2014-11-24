@@ -62,9 +62,10 @@
             (.channel NioServerSocketChannel)
             (.childHandler (proxy [ChannelInitializer] []
                              (initChannel [^SocketChannel channel]
-                               (let [^ChannelPipeline pipeline (.pipeline channel)]
+                               (let [^ChannelPipeline pipeline (.pipeline channel)
+                                     {:keys [produce]} (handle-it)]
                                  (.addLast pipeline (into-array ChannelHandler [(FixedLengthFrameDecoder. (int 107))
-                                                                                (data-handler handle-it)]))))))
+                                                                                (data-handler produce)]))))))
             (.option (ChannelOption/WRITE_BUFFER_LOW_WATER_MARK) (int (* 64 1024)))
             (.option (ChannelOption/WRITE_BUFFER_HIGH_WATER_MARK) (int (dec (* 2 1024 1024 1024))))
             (.option (ChannelOption/SO_RCVBUF) (int (* 16 1024 1024)))

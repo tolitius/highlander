@@ -9,18 +9,21 @@
   (:gen-class))
 
 ;; For vannila NIO a fixed length frame decoder is used as an example. TODO: Needs to be pluggable
-(defn rock-and-roll [{:keys [server host port produce consume fixed-length] :as props}]
+(defn rock-and-roll [handler
+                     {:keys [server fixed-length] :as props}]
   (case server
-    "netty" (netty/start produce props)
-    "nio"   (let [handler (partial nio/decode-fixed-lengh-frame produce fixed-length)]
-              (nio/start handler props))
-  (future-cancel consume)))
+    "netty" (netty/start handler props)
+    "nio" (let [{:keys [produce consume]} (handler)
+                st-handler (partial nio/decode-fixed-lengh-frame produce fixed-length)] ;; single threaded handler
+            (nio/start st-handler props))
+    ;; (future-cancel consume) ;; TODO: think about multi threaded "consume" access here (via promise?)
+    ))
 
 (defn plug-and-play [store-it
-                     {:keys [queue server monterval zqueue qcapacity host port fixed-length] :as props}]
+                     {:keys [queue monterval zqueue qcapacity] :as props}]
   (case queue
-    "zmq" (rock-and-roll (merge (zmq/pc store-it zqueue monterval) props))
-    "swpq" (rock-and-roll (merge (swpq/pc store-it qcapacity monterval) props))))
+    "zmq" (rock-and-roll #(zmq/pc store-it zqueue monterval) props)
+    "swpq" (rock-and-roll #(swpq/pc store-it qcapacity monterval) props)))
 
 (defn store-timeseries [message]
   "an example of a storage fun"
@@ -40,4 +43,3 @@
                     ["-mi" "--monterval" "queue monitor interval" :parse-fn #(Integer. %) :default 5])]
     (info usage)
     (plug-and-play store-timeseries props)))
-
