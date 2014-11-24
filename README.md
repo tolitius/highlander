@@ -25,11 +25,23 @@ There are some built in pieces though that can be used instead of default config
 
 ## Current Throughput
  
-An average throughput of a _single_ connection to Highlander with defaults: e.g. `Netty 4.0.24.Final`, `ZeroMQ 4.0.5` (used via JZMQ) and `Redis 2.8.17`, sending 107 byte messages to `127.0.0.1` is **675,000 messages per second**.
+Benchmark numbers are all relative to many things (hardware, network, clients, other things running, etc..), but to set a rough baseline.. here we go.
 
-This does not mean `675K` messages per second are read from the network and persisted in a data store. The idea is to have queue(s) absorb the load, while landing these messages "comfortably" to the data store. Hence the concept of a `queue depth` (an absorb bucket) shown in examples below.
+An average throughput of a _single_ connection to Highlander with defaults: e.g. `Netty 4.0.24.Final`, `ZeroMQ 4.0.5` (used via JZMQ) and `Redis 2.8.17`, sending 100 byte messages to `127.0.0.1` is **435,000 messages per second**.
 
-With `--server nio` (a simple Java NIO server), a _single_ connection speed is **`635K`** messages per second. `Netty` is a default, preferred choice due to its flexibility and ability to scale not only in throughput, but also in a number of connections.
+This does not mean `435K` messages per second are read from the network and persisted in a data store. The idea is to have queue(s) absorb the load, while landing these messages "comfortably" to the data store. Hence the concept of a `queue depth` (an absorb bucket) shown in examples below.
+
+With `--server nio` (a simple Java NIO server), a _single_ connection speed is **`395K`** messages per second. `Netty` is a default, preferred choice due to its flexibility and ability to scale not only in throughput, but also in a number of connections.
+
+### Throughput with Multiple Clients
+
+By default a built in `bench.streamer` will use 5 clients to send data to highlander. Since Netty likes concurrency, it takes it without a hiccup at an average speed of **1.2 million** 100 byte messages **a second**:
+
+```bash
+Nov 24, 2014 12:01:23 PM clojure.tools.logging$eval306$fn__310 invoke
+INFO:
+total throughput (ALL partitions): 1254800.0 msg/s
+```
 
 _(MacBook Pro 2.3 GHz i7 16GB)_
 
@@ -59,18 +71,17 @@ INFO: highlander is ready for the lightning {:host 0.0.0.0 :port 4242 }
 
 and of course the usage:
 ```bash
-Mar 21, 2013 8:10:30 PM clojure.tools.logging$eval3$fn__7 invoke
-INFO: Usage:
-
- Switches          Default             Desc
- --------          -------             ----
- -h, --host        0.0.0.0             start on this hostname
- -p, --port        4242                listen on this port
- -zq, --zqueue     inproc://zhulk.ipc  use this zmq queue
- -q, --queue       zmq                 queue type [e.g. zmq, swpq]
- -qc, --qcapacity  33554432            queue capacity. used for JVM queues
- -s, --server      netty               server type [e.g. netty, nio]
- -mi, --monterval  5                   queue monitor interval
+Nov 24, 2014 12:11:59 PM clojure.tools.logging$eval306$fn__310 invoke
+INFO:  Switches             Default             Desc
+ --------             -------             ----
+ -h, --host           0.0.0.0             start on this hostname
+ -p, --port           4242                listen on this port
+ -zq, --zqueue        inproc://zhulk.ipc  use this zmq queue
+ -q, --queue          zmq                 queue type [e.g. zmq, swpq]
+ -qc, --qcapacity     33554432            queue capacity. used for JVM queues
+ -s, --server         netty               server type [e.g. netty, nio]
+ -fl, --fixed-length  100                 fixed length messages
+ -mi, --monterval     5                   queue monitor interval
 ```
 
 ### Swapping Qs
@@ -104,9 +115,12 @@ For example ZeroMQ does not allow you to do that, hence Highlander has a Q monit
 that gives basic throughput visibility as the data streams in:
 
 ```bash
-       message rate: 680256.6 msg/s
-      current depth: 99170665
- pass through total: 101939881
+---------------------------------------------
+queue  [inproc://zhulk.ipc:29]
+---------------------------------------------
+       message rate: 445253.2 msg/s
+      current depth: 8359612
+ pass through total: 8619778
 ```
 
 ### Exporting LD_LIBRARY_PATH
@@ -137,12 +151,15 @@ INFO: Usage:
  -mi, --monterval  5               queue monitor interval
 ```
 
-For example here is a default ZeroMQ rate pushing 6.7 million messages a second:
+For example here is a default ZeroMQ rate with a single queue pushing 2.8 million messages a second:
 
 ```bash
-       message rate: 6692981.6 msg/s
-      current depth: 130530939
- pass through total: 130547905
+---------------------------------------------
+queue  [inproc://zhulk:1]
+---------------------------------------------
+       message rate: 2850446.8 msg/s
+      current depth: 27747444
+ pass through total: 27755805
 ```
 
 While ZeroMQ is great and it is default, the Q Pusher can be told to work with any other queue implementaion. 
@@ -154,7 +171,7 @@ $ lein run -m bench.qpusher -q swpq
 ```
 
 ```
-       message rate: 1676536.0 msg/s
+       message rate: 167536.0 msg/s
       current depth: 40987563
  pass through total: 41007837
 ```
@@ -163,11 +180,11 @@ $ lein run -m bench.qpusher -q swpq
 
 Highlander also has a NIO load simulation streamer that can be run on the same or different host and stream messages to a Highlander instance.
 
-Since this is a simulation streamer, it needs to be as close to the true load as possible, hence it streams "pure truth" in a form of a question:
+Since this is a simulation streamer, it needs to be as close to the true load as possible, hence it streams "pure truth" in a form of a 100 byte question:
 
 ```java
 public static final String ULTIMATE_TRUTH = 
-  "Did you know that the Answer to the Ultimate Question of Life, the Universe, and Everything is 42? Did you?";
+  "[Did you know that the Answer to the Ultimate Question of Life, the Universe, and Everything is 42?]";
 ```
 
 that is where a "stream of truth" comes from.
@@ -175,16 +192,22 @@ that is where a "stream of truth" comes from.
 #### Usage
 
 ```bash
-Streamer host port [number of things to stream]
+ Switches                Default                                                                                               Desc
+ --------                -------                                                                                               ----
+ -h, --host              0.0.0.0                                                                                               start on this hostname
+ -p, --port              4242                                                                                                  listen on this port
+ -c, --clients           5                                                                                                     number of clients
+ -n, --number-of-things  200000000                                                                                             number of things to stream
+ -t, --thing             [Did you know that the Answer to the Ultimate Question of Life, the Universe, and Everything is 42?]  a thing/message to send
 ```
 e.g.
 ```bash
-$ lein run -m bench.Streamer localhost 4242
+$ lein run -m bench.streamer -h 10.32.2.1 -c 10
 ```
 
-will, by default, stream 100 million of "107 byte" truths to a Highlander instance. 
+By default `lein run -m bench.streamer` will stream with 5 (clients) * 200 million of "100 byte" truths to a Highlander instance. 
 
-Just as with Highlander, before running Bench Streamer, `LD_LIBRARY_PATH` needs to be exported to let it know where to find ZeroMQ C++/Java libs:
+Just as with Highlander, before running bench streamer, `LD_LIBRARY_PATH` needs to be exported to let it know where to find ZeroMQ C++/Java libs:
 ```bash
 export LD_LIBRARY_PATH=/usr/local/lib
 ```

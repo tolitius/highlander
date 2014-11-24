@@ -13,7 +13,7 @@
   (let [qrate (rate interval current @previous)]
     (swap! total-rate assoc id qrate)
     (reset! previous current)
-    (str "\ntotal throughput (ALL queues): " (reduce + (vals @total-rate)) " msg/s"
+    (str "\ntotal throughput (ALL partitions): " (reduce + (vals @total-rate)) " msg/s"
          "\n---------------------------------------------"
          "\nqueue  [" id "]"
          "\n---------------------------------------------"
