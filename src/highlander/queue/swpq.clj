@@ -1,12 +1,11 @@
-(ns highlander.util.swpq
+(ns highlander.queue.swpq
   (:use [clojure.tools.logging]
         [highlander.util.schedule])
   (:import [lmax OneToOneConcurrentArrayQueue3])
-  (:require [highlander.util.qstats :as q]))
+  (:require [highlander.monitor.qstats :as q]))
 
-(defn- qsend [queue message]
-  (swap! q/depth inc)
-  (swap! q/current inc)
+(defn- qsend [queue current message]
+  (swap! current inc)
   (.offer queue message))
 
 (defn- qpoll [queue]
@@ -16,20 +15,20 @@
       (recur (.poll queue))
       thing)))
 
-(defn- qreceive [queue consume monterval]
+(defn- qreceive [queue consume monitor]
   (try                                    ;; avoiding a silent "future" death
-    (let [monitor (q/monitor monterval)]
       (info "[swpq]: single write principle queue is ready to roll")
       (while true                         ;; TODO Have a shutdown hook
         (let [msg (qpoll queue)]
-          (swap! q/depth dec)
           (consume msg)))
-      (future-cancel monitor))
+      (future-cancel monitor)
     (catch Exception e (error "receiver caught: " e))))
 
 (defn pc [consumer capacity monterval]
   "inits 'single writer principle queue' (swpq) produce and consume"
-  (let [queue (OneToOneConcurrentArrayQueue3. capacity)]
-    {:produce (partial qsend queue) 
-     :consume (future (qreceive queue consumer monterval))}))
+  (let [queue (OneToOneConcurrentArrayQueue3. capacity)
+        thread-id (.getId (Thread/currentThread))
+        {:keys [monitor current]} (q/swpq-monitor thread-id queue monterval)]
+    {:produce (partial qsend queue current)
+     :consume (future (qreceive queue consumer monitor))}))
 

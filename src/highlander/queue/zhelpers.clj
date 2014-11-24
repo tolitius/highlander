@@ -1,7 +1,7 @@
 ;; The file is adapted from zilch, with some other useful helper methods.
 ;; https://github.com/dysinger/zilch
 
-(ns highlander.util.zhelpers
+(ns highlander.queue.zhelpers
   (:refer-clojure :exclude [send])
   (:import [org.zeromq ZMQ ZMQ$Context ZMQ$Socket ZMQQueue])
   (:use [clojure.tools.logging]))

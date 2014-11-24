@@ -1,8 +1,8 @@
 (comment ;; this is for Netty 3.x
 
-(ns highlander.util.netty3
+(ns highlander.server.netty3
   (:use [clojure.tools.logging])
-  (:require [highlander.util.qstats :as q])
+  (:require [highlander.monitor.qstats :as q])
   (:import
     [java.net InetSocketAddress]
     [java.nio ByteOrder]
