@@ -10,7 +10,7 @@
 (defonce DEFAULT_THINGS_TO_STREAM (* 200 1000 1000))
 (defonce DEFAULT_NUMBER_OF_CLIENTS 5)
 
-(defn rock-and-roll [{:keys [server host port number-of-things thing clients]}]
+(defn rock-and-roll [{:keys [host port number-of-things thing clients]}]
   (let [pool (Executors/newFixedThreadPool clients)
         tasks (map
                 #(Streamer. (str %) host port thing number-of-things) ;; a new streamer
