@@ -27,6 +27,8 @@ There are some built in pieces though that can be used instead of default config
  
 Benchmark numbers are all relative to many things (hardware, network, clients, other things running, etc..), but to set a rough baseline.. here we go.
 
+###Throughput with a Single Client
+
 An average throughput of a _single_ connection to Highlander with defaults: e.g. `Netty 4.0.24.Final`, `ZeroMQ 4.0.5` (used via JZMQ) and `Redis 2.8.17`, sending 100 byte messages to `127.0.0.1` is **435,000 messages per second**.
 
 This does not mean `435K` messages per second are read from the network and persisted in a data store. The idea is to have queue(s) absorb the load, while landing these messages "comfortably" to the data store. Hence the concept of a `queue depth` (an absorb bucket) shown in examples below.
@@ -35,7 +37,7 @@ With `--server nio` (a simple Java NIO server), a _single_ connection speed is *
 
 ### Throughput with Multiple Clients
 
-By default a built in `bench.streamer` will use 5 clients to send data to highlander. Since Netty likes concurrency, it takes it without a hiccup at an average speed of **1.2 million** 100 byte messages **a second**:
+By default a built in [bench.streamer](https://github.com/tolitius/highlander/blob/master/src/bench/streamer.clj) will use 5 clients to send data to highlander. Since Netty likes concurrency, it takes it without a hiccup at an average speed of **1.2 million** 100 byte messages **a second**:
 
 ```bash
 Nov 24, 2014 12:01:23 PM clojure.tools.logging$eval306$fn__310 invoke
@@ -178,7 +180,7 @@ $ lein run -m bench.qpusher -q swpq
 
 ### Bench Streamer
 
-Highlander also has a NIO load simulation streamer that can be run on the same or different host and stream messages to a Highlander instance.
+Highlander also has a NIO load simulation [streamer](https://github.com/tolitius/highlander/blob/master/src/bench/streamer.clj) that can be run on the same or different host and stream messages to a Highlander instance.
 
 Since this is a simulation streamer, it needs to be as close to the true load as possible, hence it streams "pure truth" in a form of a 100 byte question:
 
