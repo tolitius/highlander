@@ -12,8 +12,7 @@
                       ChannelOption]
     [io.netty.channel.nio NioEventLoopGroup]
     [io.netty.channel.socket SocketChannel]
-    [io.netty.channel.socket.nio NioServerSocketChannel]
-    [io.netty.handler.codec FixedLengthFrameDecoder]))
+    [io.netty.channel.socket.nio NioServerSocketChannel]))
 
 
 (defn data-handler [handle-it]
@@ -46,7 +45,7 @@
         (.printStackTrace throwable)
         (.close ctx)))))
 
-(defn start [handle-it {:keys [host port]}]
+(defn start [handle-it {:keys [host port frame-decoder]}]
   (let [connection-group (NioEventLoopGroup.)
         worker-group (NioEventLoopGroup.)]
     (try
@@ -58,7 +57,7 @@
                              (initChannel [^SocketChannel channel]
                                (let [^ChannelPipeline pipeline (.pipeline channel)
                                      {:keys [produce]} (handle-it)]
-                                 (.addLast pipeline (into-array ChannelHandler [(FixedLengthFrameDecoder. (int 100))
+                                 (.addLast pipeline (into-array ChannelHandler [(frame-decoder)
                                                                                 (data-handler produce)]))))))
             (.option (ChannelOption/WRITE_BUFFER_LOW_WATER_MARK) (int (* 64 1024)))
             (.option (ChannelOption/WRITE_BUFFER_HIGH_WATER_MARK) (int (dec (* 2 1024 1024 1024))))
