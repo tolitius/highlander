@@ -13,7 +13,7 @@
         (mq/connect socket queue)
         (mq/subscribe socket)
         (info "[zmq]: consumer is connected to " queue)
-        (while true   ;; TODO Have a shutdown hook
+        (while true   ;; TODO Have a shutdown hook       e.g. (future (while (not (Thread/interrupted)) f))
           (let [^bytes msg (mq/recv-bytes socket)]
             (swap! depth dec)
             (consume msg)))
