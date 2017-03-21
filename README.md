@@ -27,7 +27,7 @@ There are some built in pieces though that can be used instead of default config
  
 Benchmark numbers are all relative to many things (hardware, network, clients, other things running, etc..), but to set a rough baseline.. here we go.
 
-###Throughput with a Single Client
+### Throughput with a Single Client
 
 An average throughput of a _single_ connection to Highlander with defaults: e.g. `Netty 4.0.24.Final`, `ZeroMQ 4.0.5` (used via JZMQ) and `Redis 2.8.17`, sending 100 byte messages to `127.0.0.1` is **435,000 messages per second**.
 
@@ -49,7 +49,7 @@ _(MacBook Pro 2.3 GHz i7 16GB)_
 
 ## Usage
 
-####ZeroMQ & Java Bindings
+#### ZeroMQ & Java Bindings
 
 Since "ZeroMQ" is a default queuing mechanism, and Highlander is JVM (Clojure), ZeroMQ [libraries](http://www.zeromq.org/intro:get-the-software) and [Java bindings](http://www.zeromq.org/bindings:java) need to be installed, in order for Highlander to run.
 
